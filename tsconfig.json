@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "target": "esnext",
+    "module": "ESNext",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-jsx",
+    "ignoreDeprecations": "6.0"
+  },
+  "extends": "expo/tsconfig.base",
+  "include": ["**/*.ts", "**/*.tsx"]
+}

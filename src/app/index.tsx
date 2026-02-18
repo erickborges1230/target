@@ -1,8 +1,10 @@
-import {View} from "react-native";
+import {View, StatusBar} from "react-native";
 import {HomeHeader} from "./components/HomeHeader";
+import {router} from "expo-router";
 
 import {Target} from "@/app/components/Target";
 import {List} from "./components/List";
+import {Button} from "./components/Button";
 
 const sumary = {
   total: "R$ 2.000,00",
@@ -37,16 +39,25 @@ const targets = [
 export default function Index() {
   return (
     <View style={{flex: 1}}>
+      <StatusBar barStyle="light-content" />
       <HomeHeader data={sumary} />
 
       <List
         title="Metas"
-        data={[]}
+        data={targets}
         keyExtractor={item => item.id}
-        renderItem={({item}) => <Target data={item} />}
+        renderItem={({item}) => (
+          <Target
+            data={item}
+            onPress={() => router.navigate(`/in-progress/${item.id}`)}
+          />
+        )}
         emptyMessage="Nenhuma meta. Clique na meta para criar"
         containerStyle={{paddingHorizontal: 24}}
       />
+      <View style={{padding: 24, paddingBottom: 32}}>
+        <Button title="Nova meta" onPress={() => router.navigate("/target")} />
+      </View>
     </View>
   );
 }

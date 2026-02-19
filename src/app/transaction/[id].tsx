@@ -1,10 +1,11 @@
-import {View, Text, Button} from "react-native";
+import {View, Text} from "react-native";
 import {useLocalSearchParams, router} from "expo-router";
 
 import {Input} from "@/app/components/Input";
 import {PageHeader} from "@/app/components/PageHeader";
 import {CurrencyInput} from "@/app/components/CurrencyInput";
 import {TransactionType} from "../components/TransactionType";
+import {Button} from "@/app/components/Button";
 import {useState} from "react";
 import {TransactionTypes} from "../utils/TransactionType";
 

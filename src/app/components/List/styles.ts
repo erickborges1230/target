@@ -6,8 +6,6 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    gap: 12,
-    paddingTop: 12,
     paddingBottom: 72,
   },
   title: {

@@ -1,8 +1,9 @@
-import {View, Text, Button} from "react-native";
+import {View, Text} from "react-native";
 import {router, useLocalSearchParams} from "expo-router";
 
 import {PageHeader} from "@/app/components/PageHeader";
 import {Progress} from "@/app/components/Progress";
+import {Button} from "@/app/components/Button";
 import {List} from "@/app/components/List";
 import {Transaction, TransactioProps} from "@/app/components/Transaction";
 
@@ -47,6 +48,11 @@ export default function inPregress() {
         title="Transações"
         data={transactions}
         renderItem={({item}) => <Transaction data={item} onRemove={() => {}} />}
+        emptyMessage="Nenhum valor. Toque para guardar mais dinheiro"
+      />
+      <Button
+        title="Nova transão"
+        onPress={() => router.navigate(`/transaction/${params.id}`)}
       />
     </View>
   );

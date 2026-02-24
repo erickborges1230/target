@@ -1,10 +1,13 @@
-import {View, StatusBar} from "react-native";
+import {useCallback} from "react";
+import {View, StatusBar, Alert} from "react-native";
 import {HomeHeader} from "./components/HomeHeader";
-import {router} from "expo-router";
+import {router, useFocusEffect} from "expo-router";
 
 import {Target} from "@/app/components/Target";
 import {List} from "./components/List";
 import {Button} from "./components/Button";
+
+import {useTargetDataBase} from "@/app/database/useTargetDatabase";
 
 const sumary = {
   total: "R$ 2.000,00",
@@ -37,6 +40,25 @@ const targets = [
 ];
 
 export default function Index() {
+  const targetDataBase = useTargetDataBase();
+
+  async function fetchTargets() {
+    try {
+      const response = await targetDataBase.listBySavedValue();
+      console.log(response);
+    } catch (error) {
+      Alert.alert("Erro", "Nao possivel carregar as metas.");
+      console.log(error);
+    }
+  }
+
+  //Carreda os dados na tela automaticamente quando uma nova meta é criada.
+  useFocusEffect(
+    useCallback(() => {
+      fetchTargets();
+    }, []),
+  );
+
   return (
     <View style={{flex: 1}}>
       <StatusBar barStyle="light-content" />

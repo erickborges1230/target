@@ -1,13 +1,16 @@
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
 import {View, StatusBar, Alert} from "react-native";
-import {HomeHeader} from "./components/HomeHeader";
+import {HomeHeader} from "@/app/components/HomeHeader";
 import {router, useFocusEffect} from "expo-router";
 
-import {Target} from "@/app/components/Target";
-import {List} from "./components/List";
-import {Button} from "./components/Button";
+import {Target, TargetProps} from "@/app/components/Target";
+import {List} from "@/app/components/List";
+import {Button} from "@/app/components/Button";
 
 import {useTargetDataBase} from "@/app/database/useTargetDatabase";
+import {Loading} from "@/app/components/Loading";
+
+import {numberToCurrency} from "@/app/utils/numberTToCurrency";
 
 const sumary = {
   total: "R$ 2.000,00",
@@ -15,49 +18,48 @@ const sumary = {
   output: {label: "Saídas", value: "R$ 1.000,00"},
 };
 
-const targets = [
-  {
-    id: "1",
-    name: "Comprar uma cadeira gamer",
-    percentage: "40%",
-    current: "R$ 8000,00",
-    target: "R$ 2.500,00",
-  },
-  {
-    id: "2",
-    name: "Comprar uma cadeira de jogos",
-    percentage: "40%",
-    current: "R$ 8000,00",
-    target: "R$ 2.500,00",
-  },
-  {
-    id: "3",
-    name: "Fazer uma viagem para o para",
-    percentage: "40%",
-    current: "R$ 8000,00",
-    target: "R$ 2.500,00",
-  },
-];
-
 export default function Index() {
+  const [isFetching, setFetching] = useState(true);
+  const [targets, setTargets] = useState<TargetProps[]>([]);
+
   const targetDataBase = useTargetDataBase();
 
-  async function fetchTargets() {
+  async function fetchTargets(): Promise<TargetProps[]> {
     try {
       const response = await targetDataBase.listBySavedValue();
-      console.log(response);
+
+      return response.map(item => ({
+        id: String(item.id),
+        name: item.name,
+        current: numberToCurrency(item.current),
+        percentage: item.percentage.toFixed(0) + "%",
+        target: numberToCurrency(item.amount),
+      }));
     } catch (error) {
       Alert.alert("Erro", "Nao possivel carregar as metas.");
       console.log(error);
     }
   }
 
+  async function fetchData() {
+    const targetDataPromise = fetchTargets();
+
+    const [targetData] = await Promise.all([targetDataPromise]);
+
+    setTargets(targetData);
+    setFetching(false);
+  }
+
   //Carreda os dados na tela automaticamente quando uma nova meta é criada.
   useFocusEffect(
     useCallback(() => {
-      fetchTargets();
+      fetchData();
     }, []),
   );
+
+  if (isFetching) {
+    return <Loading />;
+  }
 
   return (
     <View style={{flex: 1}}>

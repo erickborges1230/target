@@ -21,5 +21,6 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.gray[500],
     fontFamily: FontFamily.regular,
+    marginTop: 24,
   },
 });

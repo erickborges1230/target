@@ -1,19 +1,17 @@
-import {View, Text} from "react-native";
-import {router, useLocalSearchParams} from "expo-router";
+import {useCallback, useState} from "react";
+import {View, Alert} from "react-native";
+import {router, useLocalSearchParams, useFocusEffect} from "expo-router";
 
 import {PageHeader} from "@/app/components/PageHeader";
 import {Progress} from "@/app/components/Progress";
 import {Button} from "@/app/components/Button";
 import {List} from "@/app/components/List";
+import {Loading} from "@/app/components/Loading";
 import {Transaction, TransactioProps} from "@/app/components/Transaction";
 
 import {TransactionTypes} from "@/app/utils/TransactionType";
-
-const details = {
-  current: "R$ 580,00",
-  target: "R$ 1.790,00",
-  percentage: 50,
-};
+import {useTargetDataBase} from "../database/useTargetDatabase";
+import {numberToCurrency} from "../utils/numberTToCurrency";
 
 const transactions: TransactioProps[] = [
   {
@@ -32,11 +30,53 @@ const transactions: TransactioProps[] = [
 ];
 
 export default function inPregress() {
+  const [isFetching, setIsFetching] = useState(true);
+  const [details, setDetails] = useState({
+    name: "",
+    current: "R$ 0,00",
+    target: "R$ 0,00",
+    percentage: 0,
+  });
   const params = useLocalSearchParams<{id: string}>();
+
+  const targetDatabase = useTargetDataBase();
+
+  async function fetchDetails() {
+    try {
+      const response = await targetDatabase.show(Number(params.id));
+      setDetails({
+        name: response.name,
+        current: numberToCurrency(response.current),
+        target: numberToCurrency(response.amount),
+        percentage: response.percentage,
+      });
+    } catch (error) {
+      Alert.alert("Erro", "Não possível carregar os detalhes da meta");
+      console.log(error);
+    }
+  }
+
+  async function fetchData() {
+    const fetchDatailsPromise = fetchDetails();
+
+    await Promise.all([fetchDatailsPromise]);
+    setIsFetching(false);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
+
+  if (isFetching) {
+    return <Loading />;
+  }
+
   return (
     <View style={{flex: 1, padding: 24, gap: 32}}>
       <PageHeader
-        title="Apple Watch"
+        title={details.name}
         rightButton={{
           icon: "edit",
           onPress: () => {},

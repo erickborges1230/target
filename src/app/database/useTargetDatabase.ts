@@ -23,7 +23,7 @@ export function useTargetDataBase() {
   const dataBase = useSQLiteContext();
   async function create(data: TargetCreate) {
     const statement = await dataBase.prepareAsync(
-      "INSERT INTO targets (name, amount) VALUES ($name, $amount)",
+      "INSERT INTO targets (name, amount) VALUES ($name, $amou`nt)",
     );
     statement.executeAsync({
       $name: data.name,

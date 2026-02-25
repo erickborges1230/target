@@ -16,10 +16,10 @@ export async function migrate(database: SQLiteDatabase) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       target_id INTEGER NOT NULL,
       amount FLOAT NOT NULL,
-      observation TEXT,
+      observation TEXT NULL,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      CONSTRAINT fk_targets_transactions
+      CONSTRAINT fk_transactions_target
         FOREIGN KEY (target_id)
         REFERENCES targets(id)
         ON DELETE CASCADE

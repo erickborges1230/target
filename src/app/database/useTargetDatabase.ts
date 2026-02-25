@@ -2,7 +2,7 @@ import {useSQLiteContext} from "expo-sqlite";
 
 export type TargetCreate = {
   name: string;
-  amount: string;
+  amount: number;
 };
 
 export type TargetUpdate = TargetCreate & {
@@ -68,7 +68,7 @@ export function useTargetDataBase() {
       UPDATE targets SET
         name = $name,
         amount =  $amount,
-        update_at = CURRENT_TIMESTAMP
+        updated_at = CURRENT_TIMESTAMP
       WHERE id = $id`);
 
     statement.executeAsync({

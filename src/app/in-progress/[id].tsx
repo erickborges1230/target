@@ -44,6 +44,12 @@ export default function inPregress() {
   async function fetchDetails() {
     try {
       const response = await targetDatabase.show(Number(params.id));
+      //Verificando se existe
+      if (!response) {
+        Alert.alert("Erro", "Meta não encontrada.");
+        router.back();
+        return;
+      }
       setDetails({
         name: response.name,
         current: numberToCurrency(response.current),
@@ -79,7 +85,7 @@ export default function inPregress() {
         title={details.name}
         rightButton={{
           icon: "edit",
-          onPress: () => {},
+          onPress: () => router.navigate(`/target?id=${params.id}`),
         }}
       />
       <Progress data={details} />

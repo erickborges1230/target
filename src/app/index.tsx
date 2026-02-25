@@ -15,7 +15,7 @@ import {numberToCurrency} from "@/app/utils/numberTToCurrency";
 const sumary = {
   total: "R$ 2.000,00",
   input: {label: "Entradas", value: "R$ 1.000,00"},
-  output: {label: "Saídas", value: "R$ 1.000,00"},
+  output: {label: "Saídas", value: "-R$ 1.000,00"},
 };
 
 export default function Index() {
@@ -38,18 +38,19 @@ export default function Index() {
     } catch (error) {
       Alert.alert("Erro", "Nao possivel carregar as metas.");
       console.log(error);
+      return []; // ✅ garante o tipo correto. Sem isso gero erro undefined
     }
   }
 
   async function fetchData() {
-    const targetDataPromise = fetchTargets();
-
-    const [targetData] = await Promise.all([targetDataPromise]);
-
-    setTargets(targetData);
-    setFetching(false);
+    try {
+      setFetching(true);
+      const targetData = await fetchTargets();
+      setTargets(targetData);
+    } finally {
+      setFetching(false);
+    }
   }
-
   //Carreda os dados na tela automaticamente quando uma nova meta é criada.
   useFocusEffect(
     useCallback(() => {

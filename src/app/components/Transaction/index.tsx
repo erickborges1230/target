@@ -40,7 +40,7 @@ export function Transaction({data, onRemove}: Props) {
           {data.date} {data.description && `• ${data.description}`}
         </Text>
       </View>
-      <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
+      <TouchableOpacity activeOpacity={0.8} onPress={onRemove}>
         <MaterialIcons name="close" size={18} color={colors.gray[500]} />
       </TouchableOpacity>
     </View>

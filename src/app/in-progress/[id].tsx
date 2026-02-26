@@ -80,6 +80,24 @@ export default function inPregress() {
     setIsFetching(false);
   }
 
+  function handleTransactionRemove(id: string) {
+    Alert.alert("Remover", "Deseja realmente remover", [
+      {text: "Nao", style: "cancel"},
+      {text: "Sim", onPress: () => transactionRemove(id)},
+    ]);
+  }
+
+  async function transactionRemove(id: string) {
+    try {
+      await transactionsDatabase.remove(Number(id));
+      fetchData();
+      Alert.alert("Sucesso", "Item removido com sucesso");
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível remover a transação");
+      console.log(error);
+    }
+  }
+
   useFocusEffect(
     useCallback(() => {
       fetchData();
@@ -104,7 +122,12 @@ export default function inPregress() {
       <List
         title="Transações"
         data={transactions}
-        renderItem={({item}) => <Transaction data={item} onRemove={() => {}} />}
+        renderItem={({item}) => (
+          <Transaction
+            data={item}
+            onRemove={() => handleTransactionRemove(item.id)}
+          />
+        )}
         emptyMessage="Nenhum valor. Toque para guardar mais dinheiro"
       />
       <Button

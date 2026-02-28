@@ -55,8 +55,8 @@ export function useTransactionsDatabase() {
   function summary() {
     return database.getFirstAsync<Summary>(`
         SELECT
-        COALESCE(SUM(CASA WHEN transactions.amount > 0 THEN transactions.amount ELSE O END), 0) AS input,
-        COALESCE(SUM(CASA WHEN transactions.amount < 0 THEN transactions.amount ELSE O END), 0) AS output
+        COALESCE(SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END), 0) AS input,
+        COALESCE(SUM(CASE WHEN amount < 0 THEN ABS(amount) ELSE 0 END), 0) AS output
         FROM transactions
       `);
   }

@@ -1,5 +1,5 @@
 import {useCallback, useState} from "react";
-import {View, Alert} from "react-native";
+import {View, Alert, StatusBar} from "react-native";
 import {router, useLocalSearchParams, useFocusEffect} from "expo-router";
 import dayjs from "dayjs";
 
@@ -51,7 +51,7 @@ export default function inPregress() {
     }
   }
 
-  async function fetchTransitions() {
+  async function fetchTransactions() {
     try {
       const response = await transactionsDatabase.listByTargetId(
         Number(params.id),
@@ -74,9 +74,9 @@ export default function inPregress() {
 
   async function fetchData() {
     const fetchDatailsPromise = fetchTargetDetails();
-    const fetchTransitionsPromise = fetchTransitions();
+    const fetchTransactionsPromise = fetchTransactions();
 
-    await Promise.all([fetchDatailsPromise, fetchTransitionsPromise]);
+    await Promise.all([fetchDatailsPromise, fetchTransactionsPromise]);
     setIsFetching(false);
   }
 
@@ -110,6 +110,7 @@ export default function inPregress() {
 
   return (
     <View style={{flex: 1, padding: 24, gap: 32}}>
+      <StatusBar barStyle="dark-content" />
       <PageHeader
         title={details.name}
         rightButton={{
